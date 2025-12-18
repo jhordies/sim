@@ -10,7 +10,8 @@ import {
   PopoverScrollArea,
 } from '@/components/emcn'
 import { getProviderIcon } from '@/providers/utils'
-import { MODEL_OPTIONS } from '../../constants'
+import { MODEL_OPTIONS, getModelOptions } from '../../constants'
+import { useProvidersStore } from '@/stores/providers/store'
 
 interface ModelSelectorProps {
   /** Currently selected model */
@@ -50,9 +51,16 @@ export function ModelSelector({ selectedModel, isNearTop, onModelSelect }: Model
   const [open, setOpen] = useState(false)
   const triggerRef = useRef<HTMLDivElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
+  const ollamaModels = useProvidersStore(state => state.providers.ollama.models)
+  
+  // Combine static and dynamic models
+  const allModelOptions = [
+    ...MODEL_OPTIONS,
+    ...ollamaModels.map(model => ({ value: model, label: model }))
+  ]
 
   const getCollapsedModeLabel = () => {
-    const model = MODEL_OPTIONS.find((m) => m.value === selectedModel)
+    const model = allModelOptions.find((m) => m.value === selectedModel)
     return model ? model.label : 'claude-4.5-sonnet'
   }
 
@@ -131,7 +139,7 @@ export function ModelSelector({ selectedModel, isNearTop, onModelSelect }: Model
         onCloseAutoFocus={(e) => e.preventDefault()}
       >
         <PopoverScrollArea className='space-y-[2px]'>
-          {MODEL_OPTIONS.map((option) => (
+          {allModelOptions.map((option) => (
             <PopoverItem
               key={option.value}
               active={selectedModel === option.value}
