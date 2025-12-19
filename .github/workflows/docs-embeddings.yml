@@ -7,7 +7,7 @@ on:
 jobs:
   process-docs-embeddings:
     name: Process Documentation Embeddings
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+  runs-on: ubuntu-24.04
     if: github.ref == 'refs/heads/main'
 
     steps:
