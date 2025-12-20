@@ -19,7 +19,7 @@ jobs:
   # Detect if this is a version release commit (e.g., "v0.5.24: ...")
   detect-version:
     name: Detect Version
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-22.04
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
     outputs:
       version: ${{ steps.extract.outputs.version }}
@@ -145,7 +145,7 @@ jobs:
   build-ghcr-arm64:
     name: Build ARM64 (GHCR Only)
     needs: [test-build, detect-version]
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-22.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -204,7 +204,7 @@ jobs:
   # Create GHCR multi-arch manifests (only for main, after both builds)
   create-ghcr-manifests:
     name: Create GHCR Manifests
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    runs-on: ubuntu-22.04
     needs: [build-amd64, build-ghcr-arm64, detect-version]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
@@ -253,7 +253,7 @@ jobs:
   # Check if docs changed
   check-docs-changes:
     name: Check Docs Changes
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    runs-on: ubuntu-22.04
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     outputs:
       docs_changed: ${{ steps.filter.outputs.docs }}
